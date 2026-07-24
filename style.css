@@ -385,7 +385,9 @@ body {
   align-items: center;
   justify-content: center;
 }
-
+.player-overlay[hidden] {
+  display: none;
+}
 .player-wrap {
   width: 100%;
   aspect-ratio: 16 / 9;
