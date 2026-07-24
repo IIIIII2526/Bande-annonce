@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Séance — Bandes-annonces</title>
+<meta name="description" content="Toutes les nouvelles bandes-annonces de films et séries, triées par studio.">
+<meta name="theme-color" content="#0B0B0F">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="marquee">
+  <div class="marquee__bulbs" aria-hidden="true"></div>
+  <h1 class="marquee__title">S&Eacute;ANCE</h1>
+  <p class="marquee__sub">bandes-annonces &middot; en salle bient&ocirc;t</p>
+  <button id="settingsBtn" class="icon-btn" aria-label="Param&egrave;tres">&#9881;</button>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab is-active" data-tab="new">Nouveaut&eacute;s</button>
+  <button class="tab" data-tab="studios">Mes studios</button>
+</nav>
+
+<main id="app">
+
+  <!-- Onboarding: TMDB key setup -->
+  <section id="onboarding" class="panel" hidden>
+    <p class="stub-label">avant la s&eacute;ance</p>
+    <h2>Une cl&eacute; gratuite pour d&eacute;marrer</h2>
+    <p class="muted">Cette appli va chercher les bandes-annonces sur <strong>TMDB</strong> (The Movie Database), gratuit. Cr&eacute;e un compte, r&eacute;cup&egrave;re ta cl&eacute; API, colle-la ici &mdash; elle reste uniquement sur ton t&eacute;l&eacute;phone.</p>
+    <ol class="steps">
+      <li>Va sur <a href="https://www.themoviedb.org/signup" target="_blank" rel="noopener">themoviedb.org/signup</a> (compte gratuit)</li>
+      <li>Param&egrave;tres &rarr; API &rarr; demande une cl&eacute; "Developer"</li>
+      <li>Copie la cl&eacute; ("API Key (v3 auth)") et colle-la ci-dessous</li>
+    </ol>
+    <input id="apiKeyInput" type="text" inputmode="text" placeholder="Colle ta cl&eacute; API TMDB ici" autocomplete="off" spellcheck="false">
+    <button id="saveKeyBtn" class="btn btn--gold">Valider et entrer</button>
+    <p id="onboardingError" class="error" hidden></p>
+  </section>
+
+  <!-- Studio picker -->
+  <section id="studioPanel" class="panel" hidden>
+    <p class="stub-label">s&eacute;lection</p>
+    <h2>Choisis tes studios</h2>
+    <p class="muted">Coche les studios &agrave; suivre. Le fil "Mes studios" n'affichera que leurs sorties.</p>
+    <div class="search-row">
+      <input id="studioSearch" type="text" placeholder="Chercher un studio (ex: A24, Ghibli...)">
+    </div>
+    <div id="studioSearchResults" class="chip-row"></div>
+    <h3 class="section-label">Populaires</h3>
+    <div id="studioPresets" class="chip-row"></div>
+    <h3 class="section-label">S&eacute;lectionn&eacute;s</h3>
+    <div id="studioSelected" class="chip-row chip-row--selected"></div>
+  </section>
+
+  <section id="feedEmpty" class="panel" hidden>
+    <p class="stub-label">salle vide</p>
+    <h2 id="feedEmptyTitle">Rien &agrave; l'affiche</h2>
+    <p class="muted" id="feedEmptyText">S&eacute;lectionne au moins un studio dans l'onglet "Mes studios".</p>
+  </section>
+
+  <section id="feedError" class="panel" hidden>
+    <p class="stub-label">incident technique</p>
+    <h2>La s&eacute;ance est interrompue</h2>
+    <p class="muted" id="feedErrorText">Impossible de contacter TMDB. V&eacute;rifie ta connexion ou ta cl&eacute; API.</p>
+    <button id="retryBtn" class="btn btn--gold">R&eacute;essayer</button>
+  </section>
+
+  <div id="loading" class="loading" hidden>
+    <div class="reel" aria-hidden="true"></div>
+    <p>Chargement de la s&eacute;ance&hellip;</p>
+  </div>
+
+  <div id="feed" class="feed"></div>
+
+</main>
+
+<div id="playerOverlay" class="player-overlay" hidden>
+  <button id="playerClose" class="player-close" aria-label="Fermer">&times;</button>
+  <div class="player-wrap">
+    <iframe id="playerFrame" title="Bande-annonce" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
