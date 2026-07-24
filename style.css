@@ -229,7 +229,9 @@ body {
   font-size: 12px;
   letter-spacing: 1px;
 }
-
+.loading[hidden] {
+  display: none;
+}
 .reel {
   width: 40px;
   height: 40px;
@@ -247,7 +249,9 @@ body {
   display: grid;
   gap: 16px;
 }
-
+.feed[hidden] {
+  display: none;
+}
 .ticket {
   display: grid;
   grid-template-columns: 108px 1fr;
