@@ -193,22 +193,31 @@
     };
   }
 
+  function isoDaysFromNow(days) {
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    return d.toISOString().slice(0, 10);
+  }
+
   async function fetchNewFeed() {
     const cached = readCache("feed:new");
     if (cached) return cached;
 
-    const [upcoming, nowPlaying, onAir, airingToday] = await Promise.all([
-      tmdbJson("/movie/upcoming"),
-      tmdbJson("/movie/now_playing"),
-      tmdbJson("/tv/on_the_air"),
-      tmdbJson("/tv/airing_today"),
+    const gte = isoDaysFromNow(-365);
+    const lte = isoDaysFromNow(60);
+
+    const [movieP1, movieP2, tvP1, tvP2] = await Promise.all([
+      tmdbJson(`/discover/movie?sort_by=primary_release_date.desc&primary_release_date.gte=${gte}&primary_release_date.lte=${lte}&vote_count.gte=1&page=1`),
+      tmdbJson(`/discover/movie?sort_by=primary_release_date.desc&primary_release_date.gte=${gte}&primary_release_date.lte=${lte}&vote_count.gte=1&page=2`),
+      tmdbJson(`/discover/tv?sort_by=first_air_date.desc&first_air_date.gte=${gte}&first_air_date.lte=${lte}&vote_count.gte=1&page=1`),
+      tmdbJson(`/discover/tv?sort_by=first_air_date.desc&first_air_date.gte=${gte}&first_air_date.lte=${lte}&vote_count.gte=1&page=2`),
     ]);
 
     let items = [
-      ...(upcoming.results || []).map((r) => mapResult(r, "movie")),
-      ...(nowPlaying.results || []).map((r) => mapResult(r, "movie")),
-      ...(onAir.results || []).map((r) => mapResult(r, "tv")),
-      ...(airingToday.results || []).map((r) => mapResult(r, "tv")),
+      ...(movieP1.results || []).map((r) => mapResult(r, "movie")),
+      ...(movieP2.results || []).map((r) => mapResult(r, "movie")),
+      ...(tvP1.results || []).map((r) => mapResult(r, "tv")),
+      ...(tvP2.results || []).map((r) => mapResult(r, "tv")),
     ];
 
     const seen = new Set();
@@ -220,7 +229,7 @@
     });
 
     items.sort((a, b) => (a.date < b.date ? 1 : -1));
-    items = items.slice(0, 24);
+    items = items.slice(0, 36);
 
     await Promise.all(items.map(attachTrailer));
     items = items.filter((it) => it.videoKey);
