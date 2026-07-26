@@ -358,6 +358,15 @@ body {
   border-left: 8px solid var(--gold);
 }
 
+.ticket__play--teaser {
+  border-color: rgba(241,236,221,0.4);
+  color: var(--cream);
+}
+
+.ticket__play--teaser::before {
+  border-left-color: var(--cream);
+}
+
 .ticket__novideo {
   margin-top: auto;
   font-family: var(--mono);
