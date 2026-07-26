@@ -174,10 +174,13 @@
       const trailer =
         vids.find((v) => v.site === "YouTube" && v.type === "Trailer" && v.official) ||
         vids.find((v) => v.site === "YouTube" && v.type === "Trailer") ||
+        vids.find((v) => v.site === "YouTube" && v.type === "Teaser" && v.official) ||
         vids.find((v) => v.site === "YouTube" && v.type === "Teaser");
       item.videoKey = trailer ? trailer.key : null;
+      item.videoType = trailer ? trailer.type : null; // "Trailer" | "Teaser"
     } catch (e) {
       item.videoKey = null;
+      item.videoType = null;
     }
     return item;
   }
@@ -309,9 +312,10 @@
     `;
 
     if (item.videoKey) {
+      const isTeaser = item.videoType === "Teaser";
       const playBtn = document.createElement("button");
-      playBtn.className = "ticket__play";
-      playBtn.textContent = "Bande-annonce";
+      playBtn.className = "ticket__play" + (isTeaser ? " ticket__play--teaser" : "");
+      playBtn.textContent = isTeaser ? "Teaser" : "Bande-annonce";
       playBtn.addEventListener("click", () => openPlayer(item.videoKey));
       body.appendChild(playBtn);
     } else {
